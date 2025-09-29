@@ -17,15 +17,19 @@ model_path = hf_hub_download(
 model = fasttext.load_model(model_path)
 
 
-class SorjinBaseManualDataCollectorPipeline:
+class LenPipeline:
     def process_item(self, item, spider):
+        text_list = item["text"].split()
+        if len(text_list) < 300:
+            print("Text is too short, dropping item")
+            raise DropItem("Text is too short")
+
         return item
 
 
 class LanguagePipeline:
     def process_item(self, item, spider):
-        text = item["content"].replace("\n", " ")
-
+        text = item["text"].replace("\n", " ")
         lang = model.predict(text)
         label = lang[0][0]
         if label == "__label__kmr_Latn":
