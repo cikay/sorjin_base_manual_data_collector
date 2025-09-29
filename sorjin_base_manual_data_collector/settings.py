@@ -59,7 +59,8 @@ DOWNLOAD_DELAY = 1
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "sorjin_base_manual_data_collector.pipelines.LanguagePipeline": 300,
+    "sorjin_base_manual_data_collector.pipelines.LenPipeline": 100,
+    "sorjin_base_manual_data_collector.pipelines.LanguagePipeline": 200,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
