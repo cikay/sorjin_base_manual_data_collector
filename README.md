@@ -15,7 +15,7 @@ pipenv shell
 pipenv install
 ```
 
-**Run spider**
+**Run recursive spider**
 ```
-scrapy crawl {spider_name} -o news.csv
+scrapy crawl recursive_spider -o news.csv
 ```
