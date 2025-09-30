@@ -17,11 +17,13 @@ class RecursiveSpider(scrapy.Spider):
 
     def parse(self, response):
         domain = urlparse(response.url).netloc
-        extractor_klass = DOMAIN_TO_EXTRACTOR.get(domain)
+        if domain.startswith("www."):
+            domain = domain[4:]
 
-        if extractor_klass:
-            extractor = extractor_klass()
-            yield extractor.parse(response)
+        extractor_klass = DOMAIN_TO_EXTRACTOR[domain]
+
+        extractor = extractor_klass()
+        yield extractor.parse(response)
 
         # follow links recursively
         for href in response.css("a::attr(href)").getall():
