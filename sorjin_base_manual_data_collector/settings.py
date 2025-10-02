@@ -6,6 +6,12 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import dotenv
+import os
+
+
+dotenv.load_dotenv()
+
 
 BOT_NAME = "sorjin_base_manual_data_collector"
 

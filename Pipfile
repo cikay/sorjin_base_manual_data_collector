@@ -8,6 +8,7 @@ huggingface-hub = "*"
 numpy = "<2.0"
 fasttext = "*"
 scrapy = "*"
+dotenv = "*"
 
 [dev-packages]
 
