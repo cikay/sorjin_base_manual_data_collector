@@ -29,5 +29,36 @@ class RecursiveSpider(scrapy.Spider):
         for href in response.css("a::attr(href)").getall():
             url = response.urljoin(href)
             url = url.split("#")[0]  # drop fragment
-            if domain in url:  # stay within domain
+
+            if self.should_request(url, domain):
                 yield scrapy.Request(url, callback=self.parse, dont_filter=False)
+
+    def should_request(self, url, domain):
+        return domain in url and not self.is_media_url(url)
+
+    def is_media_url(self, url: str):
+        return url.lower().endswith(
+            (
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".gif",
+                ".bmp",
+                ".svg",
+                ".webp",
+                ".mp4",
+                ".avi",
+                ".mov",
+                ".mkv",
+                ".mp3",
+                ".wav",
+                ".ogg",
+                ".pdf",
+                ".doc",
+                ".docx",
+                ".xls",
+                ".xlsx",
+                ".zip",
+                ".rar",
+            )
+        )
