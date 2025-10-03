@@ -16,10 +16,7 @@ class RecursiveSpider(scrapy.Spider):
     }
 
     def parse(self, response):
-        domain = urlparse(response.url).netloc
-        if domain.startswith("www."):
-            domain = domain[4:]
-
+        domain = self.get_domain(response.url)
         extractor_klass = DOMAIN_TO_EXTRACTOR[domain]
 
         extractor = extractor_klass()
@@ -35,6 +32,13 @@ class RecursiveSpider(scrapy.Spider):
 
     def should_request(self, url, domain):
         return domain in url and not self.is_media_url(url)
+
+    def get_domain(self, url):
+        domain = urlparse(url).netloc
+        if domain.startswith("www."):
+            domain = domain[4:]
+
+        return domain
 
     def is_media_url(self, url: str):
         parsed = urlparse(url)
