@@ -2,11 +2,11 @@ class JinnewsExtractor:
 
     def extract(self, response):
         title = response.css(".post-entry.single-post-box h2::text").get()
-        text_array = response.css(".post-entry.single-post-box .body ::text").getall()
+        text_list = response.css(".post-entry.single-post-box .body ::text").getall()
 
         return {
             "title": title,
-            "text": "\n".join([text.strip() for text in text_array if text.strip()]),
+            "text": "\n".join([text.strip() for text in text_list if text.strip()]),
             "url": response.url,
         }
 
@@ -19,9 +19,9 @@ class AjansawelatExtractor:
 class NuhevExtractor:
     def extract(self, response):
         title = response.css(".entry-header .jeg_post_title ::text").get()
-        text_array = response.css(".content-inner ::text").getall()
+        text_list = response.css(".content-inner ::text").getall()
         return {
             "title": title,
-            "text": "\n".join([text.strip() for text in text_array if text.strip()]),
+            "text": "\n".join([text.strip() for text in text_list if text.strip()]),
             "url": response.url,
         }
