@@ -20,7 +20,7 @@ model = fasttext.load_model(model_path)
 class LenPipeline:
     def process_item(self, item, spider):
         text_list = item["text"].split()
-        if len(text_list) < 300:
+        if len(text_list) < 100:
             print("Text is too short, dropping item")
             raise DropItem("Text is too short")
 
