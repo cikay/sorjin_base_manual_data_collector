@@ -32,7 +32,6 @@ class LanguagePipeline:
         text = item["text"].replace("\n", " ")
         labels, probs = model.predict(text)
         lang = labels[0].replace("__label__", "")
-        prob = probs[0]
 
         # attach language and confidence score to item
         # keep only Kurdish-related languages
@@ -43,6 +42,4 @@ class LanguagePipeline:
             raise DropItem(f"Item is not Kurdish ({lang})")
 
         item["lang"] = lang
-        item["lang_score"] = prob
-
         return item
