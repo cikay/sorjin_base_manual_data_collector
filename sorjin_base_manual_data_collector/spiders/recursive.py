@@ -20,7 +20,7 @@ class RecursiveSpider(scrapy.Spider):
         extractor_klass = DOMAIN_TO_EXTRACTOR[domain]
 
         extractor = extractor_klass()
-        yield extractor.parse(response)
+        yield extractor.extract(response)
 
         # follow links recursively
         for href in response.css("a::attr(href)").getall():

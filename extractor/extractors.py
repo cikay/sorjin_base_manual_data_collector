@@ -1,5 +1,6 @@
 class JinnewsExtractor:
-    def parse(self, response):
+
+    def extract(self, response):
         title = response.css(".post-entry.single-post-box h2::text").get()
         text_array = response.css(".post-entry.single-post-box .body ::text").getall()
 
@@ -16,7 +17,7 @@ class AjansawelatExtractor:
 
 
 class NuhevExtractor:
-    def parse(self, response):
+    def extract(self, response):
         title = response.css(".entry-header .jeg_post_title ::text").get()
         text_array = response.css(".content-inner ::text").getall()
         return {
