@@ -1,4 +1,4 @@
-from extractor.extractors import JinnewsExtractor, NuhevExtractor
+from extractor.text_extractors import JinnewsExtractor, NuhevExtractor
 
 
 DOMAIN_TO_EXTRACTOR = {
