@@ -9,6 +9,7 @@ numpy = "<2.0"
 fasttext = "*"
 scrapy = "*"
 dotenv = "*"
+pandas = "*"
 
 [dev-packages]
 
