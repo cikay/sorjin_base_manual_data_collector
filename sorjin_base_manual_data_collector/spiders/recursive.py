@@ -37,7 +37,10 @@ class RecursiveSpider(scrapy.Spider):
         return domain in url and not self.is_media_url(url)
 
     def is_media_url(self, url: str):
-        return url.lower().endswith(
+        parsed = urlparse(url)
+        path = parsed.path.lower()
+        path = path.removesuffix("/")
+        return path.endswith(
             (
                 ".jpg",
                 ".jpeg",
