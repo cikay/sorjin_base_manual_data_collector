@@ -1,5 +1,17 @@
 Sorjîn base manual data collector
 
+**Env variables**
+Put the following environment variables to .env file
+
+Get API key from https://scrapeops.io/app/headers
+```
+SCRAPEOPS_API_KEY=""
+```
+
+```
+scrapy crawl xwebun -o {file}
+```
+
 **Create virtual environment**
 ```
 pipenv --python 3.10
