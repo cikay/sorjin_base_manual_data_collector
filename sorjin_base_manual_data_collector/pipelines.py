@@ -30,10 +30,19 @@ class LenPipeline:
 class LanguagePipeline:
     def process_item(self, item, spider):
         text = item["text"].replace("\n", " ")
-        lang = model.predict(text)
-        label = lang[0][0]
-        if label == "__label__kmr_Latn":
-            return item
+        labels, probs = model.predict(text)
+        lang = labels[0].replace("__label__", "")
+        prob = probs[0]
 
-        print("It is not Kurdish Kurmanji, dropping item")
-        raise DropItem("Item is not Kurdish Kurmanji")
+        # attach language and confidence score to item
+        # keep only Kurdish-related languages
+        # kmr_Latn → Kurmanji (Northern Kurdish, Latin script)
+        # ckb_Arab → Sorani (Central Kurdish, often in Arabic script)
+        if lang not in ["kmr_Latn", "ckb_Arab"]:
+            print(f"Dropping non-Kurdish text ({lang})")
+            raise DropItem(f"Item is not Kurdish ({lang})")
+
+        item["lang"] = lang
+        item["lang_score"] = prob
+
+        return item
