@@ -15,7 +15,12 @@ class AjansawelatExtractor:
         pass
 
 
-class NuhevaExtractor:
+class NuhevExtractor:
     def parse(self, response):
-        pass
-
+        title = response.css(".entry-header .jeg_post_title ::text").get()
+        text_array = response.css(".content-inner ::text").getall()
+        return {
+            "title": title,
+            "text": "\n".join([text.strip() for text in text_array if text.strip()]),
+            "url": response.url,
+        }
