@@ -26,11 +26,11 @@ class UrlExtractor:
         return re_html.match(response.headers.get("Content-Type").decode("utf-8"))
 
     @classmethod
-    def should_request(self, url, domain):
+    def should_request(cls, url, domain):
         return (
             domain in url
-            and not self._is_media_url(url)
-            and self._is_matched_ignore_regex(url)
+            and not cls._is_media_url(url)
+            and not cls._is_matched_ignore_regex(url)
         )
 
     @staticmethod
@@ -42,9 +42,9 @@ class UrlExtractor:
         return domain
 
     @classmethod
-    def _is_media_url(self, url: str):
+    def _is_media_url(cls, url: str):
         matched = re.match(
-            r".*\." + self.IGNORE_FILE_EXTENSIONS + r"$",
+            r".*\." + cls.IGNORE_FILE_EXTENSIONS + r"$",
             url,
             re.IGNORECASE,
         )
@@ -54,6 +54,7 @@ class UrlExtractor:
 
         return is_matched
 
-    def _is_matched_ignore_regex(self, url):
-        matched = re.search(self.IGNORE_REGEX, url)
+    @classmethod
+    def _is_matched_ignore_regex(cls, url):
+        matched = re.search(cls.IGNORE_REGEX, url)
         return bool(matched)
