@@ -27,7 +27,11 @@ class UrlExtractor:
 
     @classmethod
     def should_request(self, url, domain):
-        return domain in url and not self._is_media_url(url)
+        return (
+            domain in url
+            and not self._is_media_url(url)
+            and self._is_matched_ignore_regex(url)
+        )
 
     @staticmethod
     def get_domain(url):
@@ -50,5 +54,6 @@ class UrlExtractor:
 
         return is_matched
 
-    def _ignore_regex_test(self, url):
-        return re.search(self.IGNORE_REGEX, url)
+    def _is_matched_ignore_regex(self, url):
+        matched = re.search(self.IGNORE_REGEX, url)
+        return bool(matched)
