@@ -7,6 +7,8 @@ from scrapy import signals
 import requests
 from urllib.parse import urlencode
 from random import randint
+from scrapy.exceptions import IgnoreRequest
+from extractor.url_extractor import UrlExtractor
 
 
 class SorjinBaseManualDataCollectorSpiderMiddleware:
@@ -212,3 +214,10 @@ class ScrapeOpsFakeBrowserHeaderAgentMiddleware:
 
         print("************ NEW HEADER ATTACHED *******")
         print(request.headers)
+
+
+class MediaFilterMiddleware:
+    def process_request(self, request, spider):
+        domain = UrlExtractor.get_domain(request.url)
+        if not UrlExtractor.should_request(request.url, domain):
+            raise IgnoreRequest

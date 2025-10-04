@@ -53,7 +53,8 @@ DOWNLOAD_DELAY = 1
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    "sorjin_base_manual_data_collector.middlewares.ScrapeOpsFakeUserAgentMiddleware": 543,
+    "sorjin_base_manual_data_collector.middlewares.MediaFilterMiddleware": 300,
+    "sorjin_base_manual_data_collector.middlewares.ScrapeOpsFakeUserAgentMiddleware": 400,
 }
 
 # Enable or disable extensions
