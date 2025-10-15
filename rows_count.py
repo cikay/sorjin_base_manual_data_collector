@@ -16,10 +16,11 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-def count_rows_with_pandas(file_path):
-    df = pd.read_csv(file_path)
-    return len(df)
+df = pd.read_csv(args.file_name)
+print(f"The CSV file contains {len(df)} rows (excluding header).")
 
 
-count = count_rows_with_pandas(args.file_name)
-print(f"The CSV file contains {count} rows (excluding header).")
+for unique_field in ("title", "url", "text"):
+    unique_field_count = df[unique_field].nunique()
+
+    print(f"Number of unique {unique_field}s: {unique_field_count}")
