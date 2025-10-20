@@ -31,3 +31,9 @@ pipenv install
 ```
 scrapy crawl recursive_spider -o news.csv
 ```
+
+**Check rows count of a file**
+
+```
+python rows_count.py --file-name {file_name}
+```
