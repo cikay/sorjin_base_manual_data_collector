@@ -1,4 +1,9 @@
-from extractor.text_extractors import JinnewsExtractor, NuhevExtractor, XwebunExtractor
+from extractor.text_extractors import (
+    JinnewsExtractor,
+    NuhevExtractor,
+    XwebunExtractor,
+    LotikxaneExtractor,
+)
 
 
 DOMAIN_TO_EXTRACTOR = {
@@ -6,4 +11,5 @@ DOMAIN_TO_EXTRACTOR = {
 
     "nuhev.com": NuhevExtractor,
     "jinnews.net": JinnewsExtractor,
+    "lotikxane.com": LotikxaneExtractor,
 }

@@ -1,3 +1,6 @@
+from parsel import Selector
+
+
 class JinnewsExtractor:
 
     def extract(self, response):
@@ -39,5 +42,37 @@ class XwebunExtractor:
         return {
             "title": title,
             "text": text,
+            "url": response.url,
+        }
+
+
+class LotikxaneExtractor:
+
+    def extract(self, response):
+        title = response.css(".entry-header-details h1.entry-title ::text").get()
+        html = response.text
+        sel = Selector(text=html)
+        # Select all nodes before <h3.awpa-title> inside the .entry-content-wrap.read-single
+        nodes = sel.css(".entry-content.read-details > *").getall()
+
+        text_until_h3 = []
+        for node in nodes:
+            # Stop when reaching the h3.awpa-title
+            if "<h3" in node and "awpa-title" in node:
+                break
+            text_until_h3.append(node)
+        
+        parts = []
+        for node in text_until_h3:
+            node_text = Selector(text=node).xpath("normalize-space(string())").get().strip()
+            if node_text:
+                parts.append(node_text)
+
+        # Join with newline between paragraphs
+        clean_text = "\n".join(parts)
+
+        return {
+            "title": title,
+            "text": clean_text,
             "url": response.url,
         }
