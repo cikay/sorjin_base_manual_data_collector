@@ -21,11 +21,17 @@ class AjansawelatExtractor:
 
 class NuhevExtractor:
     def extract(self, response):
-        title = response.css(".entry-header .jeg_post_title ::text").get()
+        title = (response.css(".entry-header .jeg_post_title ::text").get() or "").strip()
         text_list = response.css(".content-inner ::text").getall()
         return {
             "title": title,
-            "text": "\n".join([text.strip() for text in text_list if text.strip()]),
+            "text": "\n".join(
+                [
+                    text_item.strip()
+                    for text_item in text_list
+                    if text_item and text_item.strip()
+                ]
+            ),
             "url": response.url,
         }
 
