@@ -76,3 +76,19 @@ class LotikxaneExtractor:
             "text": clean_text,
             "url": response.url,
         }
+
+
+class RojevaKurdExtractor:
+    def extract(self, response):
+        title = (response.css("h1.post-title.entry-title ::text").get() or "").strip()
+
+        texts = response.css(".entry-content.entry.clearfix ::text").getall()
+        text = "\n".join(
+            text_item.strip() for text_item in texts if text_item and text_item.strip()
+        )
+
+        return {
+            "title": title,
+            "text": text,
+            "url": response.url,
+        }
