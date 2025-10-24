@@ -38,12 +38,14 @@ class NuhevExtractor:
 
 class XwebunExtractor:
     def extract(self, response):
-        title = response.css("h1.tdb-title-text ::text").get()
+        title = (response.css("h1.tdb-title-text ::text").get() or "").strip()
 
         texts = texts = response.css(
             ".td_block_wrap.tdb_single_content.tdi_96.td-pb-border-top.td_block_template_1.td-post-content.tagdiv-type .tdb-block-inner.td-fix-index ::text"
         ).getall()
-        text = "\n".join(texts)
+        text = "\n".join(
+            text_item.strip() for text_item in texts if text_item and text_item.strip()
+        )
 
         return {
             "title": title,
