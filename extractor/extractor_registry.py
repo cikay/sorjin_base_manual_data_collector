@@ -4,6 +4,7 @@ from extractor.text_extractors import (
     XwebunExtractor,
     LotikxaneExtractor,
     RojevaKurdExtractor,
+    AjansawelatExtractor,
 )
 
 
