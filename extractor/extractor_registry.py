@@ -14,4 +14,5 @@ DOMAIN_TO_EXTRACTOR = {
     "jinnews.net": JinnewsExtractor,
     "lotikxane.com": LotikxaneExtractor,
     "rojevakurd.com": RojevaKurdExtractor,
+    "ajansawelat.com": AjansawelatExtractor
 }

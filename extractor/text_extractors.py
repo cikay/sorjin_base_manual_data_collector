@@ -15,8 +15,36 @@ class JinnewsExtractor:
 
 
 class AjansawelatExtractor:
-    def parse(self, response):
-        pass
+    def extract(self, response):
+        title = (response.css("div.jeg_inner_content h1.jeg_post_title ::text").get() or "").strip()
+
+        content_selectors = response.css("div.jeg_inner_content div.content-inner")
+        if not content_selectors:
+            return {
+                "title":"",
+                "text": "",
+                "url": response.url
+            }
+
+        content_selector = content_selectors[0]
+
+        # If there is a jeg_post_tags div, select nodes that have that div as a following-sibling
+        has_tags = bool(content_selector.xpath('.//div[contains(concat(" ", normalize-space(@class), " "), " jeg_post_tags ")]'))
+        if has_tags:
+            # get text from all child nodes that are BEFORE the jeg_post_tags div
+            texts = content_selector.xpath(
+                './node()[following-sibling::div[contains(concat(" ", normalize-space(@class), " "), " jeg_post_tags ")]]//text()'
+            ).getall()
+        else:
+            # fallback: get all text if no tags div present
+            texts = content_selector.xpath(".//text()").getall()
+
+        text = "\n".join([t.strip() for t in texts if t and t.strip()])
+        return {
+            "title": title,
+            "text": text,
+            "url": response.url,
+        }
 
 
 class NuhevExtractor:
