@@ -4,6 +4,8 @@ from extractor.text_extractors import (
     XwebunExtractor,
     LotikxaneExtractor,
     RojevaKurdExtractor,
+    AjansawelatExtractor,
+    BianetExtractor,
 )
 
 
@@ -14,5 +16,6 @@ DOMAIN_TO_EXTRACTOR = {
     "jinnews.net": JinnewsExtractor,
     "lotikxane.com": LotikxaneExtractor,
     "rojevakurd.com": RojevaKurdExtractor,
-    "ajansawelat.com": AjansawelatExtractor
+    "ajansawelat.com": AjansawelatExtractor,
+    "bianet.org": BianetExtractor,
 }

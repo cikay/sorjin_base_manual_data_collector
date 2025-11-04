@@ -128,3 +128,22 @@ class RojevaKurdExtractor:
             "text": text,
             "url": response.url,
         }
+
+
+class BianetExtractor:
+    def extract(self, response):
+        title = (response.css(".top-part .txt-wrapper h1.headline::text").get() or "").strip()
+
+        first = response.css(".top-part .txt-wrapper .desc::text").get()
+
+        paragraphs = response.css(".bottom-part .content ::text").getall()
+
+        text = "\n".join(
+            p.strip() for p in [first, *paragraphs] if p and p.strip()
+        )
+
+        return {
+            "title": title,
+            "text": text,
+            "url": response.url,
+        }
