@@ -1,7 +1,19 @@
 from parsel import Selector
 
 
-class JinnewsExtractor:
+class BaseExtractor:
+    def normalize_title(self, title):
+        return (title or "").strip()
+
+    def normalize_text(self, text_list):
+        return "\n".join(
+            stripped
+            for text in (text_list or [])
+            if text and (stripped := text.strip())
+        )
+
+
+class JinnewsExtractor(BaseExtractor):
 
     def extract(self, response):
         title = response.css(".post-entry.single-post-box h2::text").get()
@@ -14,9 +26,9 @@ class JinnewsExtractor:
         }
 
 
-class AjansawelatExtractor:
+class AjansawelatExtractor(BaseExtractor):
     def extract(self, response):
-        title = (response.css("div.jeg_inner_content h1.jeg_post_title ::text").get() or "").strip()
+        title = response.css("div.jeg_inner_content h1.jeg_post_title ::text").get()
 
         content_selectors = response.css("div.jeg_inner_content div.content-inner")
         if not content_selectors:
@@ -41,8 +53,8 @@ class AjansawelatExtractor:
 
         text = "\n".join([t.strip() for t in texts if t and t.strip()])
         return {
-            "title": title,
-            "text": text,
+            "title": self.normalize_title(title),
+            "text": self.normalize_text(texts),
             "url": response.url,
         }
 
