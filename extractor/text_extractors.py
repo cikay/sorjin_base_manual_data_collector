@@ -59,19 +59,13 @@ class AjansawelatExtractor(BaseExtractor):
         }
 
 
-class NuhevExtractor:
+class NuhevExtractor(BaseExtractor):
     def extract(self, response):
-        title = (response.css(".entry-header .jeg_post_title ::text").get() or "").strip()
+        title = response.css(".entry-header .jeg_post_title ::text").get()
         text_list = response.css(".content-inner ::text").getall()
         return {
-            "title": title,
-            "text": "\n".join(
-                [
-                    text_item.strip()
-                    for text_item in text_list
-                    if text_item and text_item.strip()
-                ]
-            ),
+            "title": self.normalize_title(title),
+            "text": self.normalize_text(text_list),
             "url": response.url,
         }
 
