@@ -70,20 +70,18 @@ class NuhevExtractor(BaseExtractor):
         }
 
 
-class XwebunExtractor:
+class XwebunExtractor(BaseExtractor):
     def extract(self, response):
-        title = (response.css("h1.tdb-title-text ::text").get() or "").strip()
+        title = response.css("h1.tdb-title-text ::text").get()
 
-        texts = texts = response.css(
+        texts = response.css(
             ".td_block_wrap.tdb_single_content.tdi_96.td-pb-border-top.td_block_template_1.td-post-content.tagdiv-type .tdb-block-inner.td-fix-index ::text"
         ).getall()
-        text = "\n".join(
-            text_item.strip() for text_item in texts if text_item and text_item.strip()
-        )
+
 
         return {
-            "title": title,
-            "text": text,
+            "title": self.normalize_title(title),
+            "text": self.normalize_text(texts),
             "url": response.url,
         }
 
