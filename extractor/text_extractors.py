@@ -70,6 +70,22 @@ class NuhevExtractor(BaseExtractor):
         }
 
 
+class AnfKurmanciExtractor(BaseExtractor):
+    def extract(self, response):
+        title = response.css("div.container div.post-content h2.entry-title ::text").get()
+        first_text = response.css(
+            "div.container div.post-content p.entry-lead ::text"
+        ).get()
+        text_list = response.css(
+            "article.post.pt-0.mt-0.post-neg.bg-transparent div.post-content div.entry-content ::text"
+        ).getall()
+        return {
+            "title": self.normalize_title(title),
+            "text": self.normalize_text([first_text, *text_list]),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()

@@ -6,12 +6,13 @@ from extractor.text_extractors import (
     RojevaKurdExtractor,
     AjansawelatExtractor,
     BianetExtractor,
+    AnfKurmanciExtractor,
 )
 
 
 DOMAIN_TO_EXTRACTOR = {
     "xwebun2.org": XwebunExtractor,
-
+    "https://kurmanci.anf-news.com": AnfKurmanciExtractor,
     "nuhev.com": NuhevExtractor,
     "jinnews.net": JinnewsExtractor,
     "lotikxane.com": LotikxaneExtractor,
