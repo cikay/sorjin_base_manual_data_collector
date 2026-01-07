@@ -86,6 +86,21 @@ class AnfKurmanciExtractor(BaseExtractor):
         }
 
 
+class MezopotamyaExtractor(BaseExtractor):
+    def extract(self, response):
+        title = response.css(
+            "div.rs-blog-post-wrapper h1.rs-blog-post-title ::text"
+        ).get()
+        text_list = response.css(
+            "div.container div.rs-postbox-details-content ::text"
+        ).getall()
+        return {
+            "title": self.normalize_title(title),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()
