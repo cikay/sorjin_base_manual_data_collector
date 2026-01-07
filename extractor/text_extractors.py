@@ -101,6 +101,19 @@ class MezopotamyaExtractor(BaseExtractor):
         }
 
 
+class DengeEmerikaExtractor(BaseExtractor):
+    def extract(self, response):
+        title = response.css(
+            "div.col-title.col-xs-12.col-md-10.pull-right h1.title.pg-title ::text"
+        ).get()
+        text_list = response.css("div#article-content ::text").getall()
+        return {
+            "title": self.normalize_title(title),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()
