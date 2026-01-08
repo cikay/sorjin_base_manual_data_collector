@@ -14,7 +14,7 @@ from extractor.text_extractors import (
 
 DOMAIN_TO_EXTRACTOR = {
     "xwebun2.org": XwebunExtractor,
-    "https://kurmanci.anf-news.com": AnfKurmanciExtractor,
+    "kurmanci.anf-news.com": AnfKurmanciExtractor,
     "nuhev.com": NuhevExtractor,
     "jinnews.net": JinnewsExtractor,
     "lotikxane.com": LotikxaneExtractor,
