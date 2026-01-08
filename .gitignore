@@ -175,5 +175,5 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 news.csv
-collected_data/
+.collected_data/
 .Ds_Store
