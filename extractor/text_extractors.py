@@ -241,6 +241,23 @@ class KurdYekitiExtractor(BaseExtractor):
         }
 
 
+class KurdistanMediaExtractor(BaseExtractor):
+    def extract(self, response):
+        title_parts = response.css(
+            "div.card-img-overlay.text-white h3.card-title ::text"
+        ).getall()
+
+        text_list = response.css(
+            "div.card div.card-body.overflow-hidden div.card-text ::text"
+        ).getall()
+
+        return {
+            "title": self.normalize_text(title_parts),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()

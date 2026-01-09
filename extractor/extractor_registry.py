@@ -16,7 +16,8 @@ from extractor.text_extractors import (
     XebatExtractor,
     DiyarnameExtractor,
     PortalNeteweExtractor,
-    KurdYekitiExtractor
+    KurdYekitiExtractor,
+    KurdistanMediaExtractor,
 )
 
 
@@ -38,5 +39,6 @@ DOMAIN_TO_EXTRACTOR = {
     "xebat.net": XebatExtractor,
     "diyarname.com": DiyarnameExtractor,
     "portal.netewe.com": PortalNeteweExtractor,
-    "kurdi.yekiti-media.org": KurdYekitiExtractor
+    "kurdi.yekiti-media.org": KurdYekitiExtractor,
+    "kurdistanmedia.com": KurdistanMediaExtractor,
 }
