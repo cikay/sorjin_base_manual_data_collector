@@ -8,7 +8,8 @@ from extractor.text_extractors import (
     BianetExtractor,
     AnfKurmanciExtractor,
     MezopotamyaExtractor,
-    DengeEmerikaExtractor
+    DengeEmerikaExtractor,
+    RupelanuExtractor,
 )
 
 
@@ -22,5 +23,6 @@ DOMAIN_TO_EXTRACTOR = {
     "ajansawelat.com": AjansawelatExtractor,
     "bianet.org": BianetExtractor,
     "mezopotamyaajansi.com": MezopotamyaExtractor,
-    "dengeamerika.com": DengeEmerikaExtractor
+    "dengeamerika.com": DengeEmerikaExtractor,
+    "rupelanu.com": RupelanuExtractor,
 }

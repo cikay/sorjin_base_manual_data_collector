@@ -114,6 +114,21 @@ class DengeEmerikaExtractor(BaseExtractor):
         }
 
 
+class RupelanuExtractor(BaseExtractor):
+    def extract(self, response):
+        title = response.css(
+            "article.news-detail.clearfix div.content-heading h1.content-title ::text"
+        ).get()
+        text_list = response.css(
+            "article.news-detail.clearfix div.text-content ::text"
+        ).getall()
+        return {
+            "title": self.normalize_title(title),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()
