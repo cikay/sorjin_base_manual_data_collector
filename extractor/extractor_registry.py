@@ -11,6 +11,7 @@ from extractor.text_extractors import (
     DengeEmerikaExtractor,
     RupelanuExtractor,
     SemakurdExtractor,
+    CandnameExtractor,
 )
 
 
@@ -27,4 +28,5 @@ DOMAIN_TO_EXTRACTOR = {
     "dengeamerika.com": DengeEmerikaExtractor,
     "rupelanu.com": RupelanuExtractor,
     "semakurd.net": SemakurdExtractor,
+    "candname.com": CandnameExtractor,
 }

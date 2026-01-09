@@ -142,6 +142,23 @@ class SemakurdExtractor(BaseExtractor):
         }
 
 
+class CandnameExtractor(BaseExtractor):
+    def extract(self, response):
+        title = response.css(
+            "div.post-inner h1.name.post-title.entry-title ::text"
+        ).get()
+        text_list = response.xpath(
+            "//div[@class='post-inner']//div[@class='entry']"
+            "//text()[not(ancestor::div[contains(@class,'share-post')])]"
+        ).getall()
+
+        return {
+            "title": self.normalize_title(title),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()
