@@ -8,9 +8,6 @@ Get API key from https://scrapeops.io/app/headers
 SCRAPEOPS_API_KEY=""
 ```
 
-```
-scrapy crawl xwebun -o {file}
-```
 
 **Create virtual environment**
 ```
