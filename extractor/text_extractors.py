@@ -20,8 +20,8 @@ class JinnewsExtractor(BaseExtractor):
         text_list = response.css(".post-entry.single-post-box .body ::text").getall()
 
         return {
-            "title": title,
-            "text": "\n".join([text.strip() for text in text_list if text.strip()]),
+            "title": self.normalize_title(title),
+            "text": self.normalize_text(text_list),
             "url": response.url,
         }
 
