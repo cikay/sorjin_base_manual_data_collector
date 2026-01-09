@@ -189,6 +189,21 @@ class XebatExtractor(BaseExtractor):
         }
 
 
+class DiyarnameExtractor(BaseExtractor):
+    def extract(self, response):
+        title_parts = response.css("h2.title-semibold-dark.size-c30 ::text").getall()
+
+        text_list = response.css(
+            "div.container div.news-details-layout1 div.content ::text"
+        ).getall()
+
+        return {
+            "title": self.normalize_text(title_parts),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()
