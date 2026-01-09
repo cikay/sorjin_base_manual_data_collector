@@ -6,7 +6,7 @@ Put the following environment variables to .env file
 Get API key from https://scrapeops.io/app/headers
 ```
 SCRAPEOPS_API_KEY=""
-ALLOWED_LANGS="kmr_Latn,kmr_Arab" # , seperated languages text you want to collect, default is kmr_Latn,ckb_Arab,diq_Latn
+ALLOWED_LANGS="kmr_Latn,ckb_Arab" # , seperated languages text you want to collect, default is kmr_Latn,ckb_Arab,diq_Latn
 ```
 
 
