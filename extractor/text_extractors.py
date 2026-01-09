@@ -204,6 +204,26 @@ class DiyarnameExtractor(BaseExtractor):
         }
 
 
+class PortalNeteweExtractor(BaseExtractor):
+    def extract(self, response):
+        title_parts = response.css("header.entry-header h1.entry-title ::text").getall()
+
+        all_texts = response.css(
+            "div#primary main#main div.entry-content ::text"
+        ).getall()
+
+        excluded = response.css(
+            "div.row.gutter-parent-14.post-wrap div.entry-content ::text"
+        ).getall()
+
+        text_list = [t for t in all_texts if t not in excluded]
+        return {
+            "title": self.normalize_text(title_parts),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()

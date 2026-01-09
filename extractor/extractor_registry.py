@@ -14,7 +14,8 @@ from extractor.text_extractors import (
     CandnameExtractor,
     RojnewsExtractor,
     XebatExtractor,
-    DiyarnameExtractor
+    DiyarnameExtractor,
+    PortalNeteweExtractor,
 )
 
 
@@ -35,4 +36,5 @@ DOMAIN_TO_EXTRACTOR = {
     "rojnews.news": RojnewsExtractor,
     "xebat.net": XebatExtractor,
     "diyarname.com": DiyarnameExtractor,
+    "portal.netewe.com": PortalNeteweExtractor,
 }
