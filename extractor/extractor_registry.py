@@ -10,6 +10,7 @@ from extractor.text_extractors import (
     MezopotamyaExtractor,
     DengeEmerikaExtractor,
     RupelanuExtractor,
+    SemakurdExtractor,
 )
 
 
@@ -25,4 +26,5 @@ DOMAIN_TO_EXTRACTOR = {
     "mezopotamyaajansi.com": MezopotamyaExtractor,
     "dengeamerika.com": DengeEmerikaExtractor,
     "rupelanu.com": RupelanuExtractor,
+    "semakurd.net": SemakurdExtractor,
 }

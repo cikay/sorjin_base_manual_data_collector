@@ -129,6 +129,19 @@ class RupelanuExtractor(BaseExtractor):
         }
 
 
+class SemakurdExtractor(BaseExtractor):
+    def extract(self, response):
+        title = response.css("div#container h1[property='dc:title'] ::text").get()
+        text_list = response.css(
+            "div#op-content div.body-content div[property='dc:description'] ::text"
+        ).getall()
+        return {
+            "title": self.normalize_title(title),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()
