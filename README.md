@@ -1,4 +1,4 @@
-Sorjîn base manual data collector
+Any Kurdish Kurmanji text data collector 
 
 **Env variables**
 Put the following environment variables to .env file
