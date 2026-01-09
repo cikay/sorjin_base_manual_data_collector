@@ -159,6 +159,23 @@ class CandnameExtractor(BaseExtractor):
         }
 
 
+class RojnewsExtractor(BaseExtractor):
+    def extract(self, response):
+        title = response.css(
+            "div.post-header.post-tp-1-header h1.single-post-title span.post-title::text"
+        ).get()
+
+        text_list = response.css(
+            "div.entry-content.clearfix.single-post-content ::text"
+        ).getall()
+
+        return {
+            "title": self.normalize_title(title),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()

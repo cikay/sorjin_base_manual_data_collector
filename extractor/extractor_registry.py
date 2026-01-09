@@ -12,6 +12,7 @@ from extractor.text_extractors import (
     RupelanuExtractor,
     SemakurdExtractor,
     CandnameExtractor,
+    RojnewsExtractor,
 )
 
 
@@ -29,4 +30,5 @@ DOMAIN_TO_EXTRACTOR = {
     "rupelanu.com": RupelanuExtractor,
     "semakurd.net": SemakurdExtractor,
     "candname.com": CandnameExtractor,
+    "rojnews.news": RojnewsExtractor,
 }
