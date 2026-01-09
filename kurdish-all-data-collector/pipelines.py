@@ -5,6 +5,8 @@
 
 
 # useful for handling different item types with a single interface
+import os
+
 from scrapy.exceptions import DropItem
 
 import fasttext
@@ -15,6 +17,13 @@ model_path = hf_hub_download(
 )
 
 model = fasttext.load_model(model_path)
+
+
+# keep only Kurdish-related languages
+# kmr_Latn → Kurmanji (Northern Kurdish, Latin script)
+# ckb_Arab → Sorani (Central Kurdish, often in Arabic script)
+# diq_Latn → Zazaki (Latin script)
+ALLOWED_LANGS = os.getenv("ALLOWED_LANGS", "kmr_Latn,ckb_Arab,diq_Latn").split(",")
 
 
 class LenPipeline:
@@ -33,11 +42,7 @@ class LanguagePipeline:
         labels, probs = model.predict(text)
         lang = labels[0].replace("__label__", "")
 
-        # keep only Kurdish-related languages
-        # kmr_Latn → Kurmanji (Northern Kurdish, Latin script)
-        # ckb_Arab → Sorani (Central Kurdish, often in Arabic script)
-        # diq_Latn → Zazaki (Latin script)
-        if lang not in ["kmr_Latn", "ckb_Arab", "diq_Latn"]:
+        if lang not in ALLOWED_LANGS:
             print(f"Dropping non-Kurdish text ({lang})")
             raise DropItem(f"Item is not Kurdish ({lang})")
 
