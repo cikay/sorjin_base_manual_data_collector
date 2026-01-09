@@ -224,6 +224,23 @@ class PortalNeteweExtractor(BaseExtractor):
         }
 
 
+class KurdYekitiExtractor(BaseExtractor):
+    def extract(self, response):
+        title_parts = response.css(
+            "article#the-post h1.post-title.entry-title ::text"
+        ).getall()
+
+        text_list = response.css(
+            "article#the-post div.entry-content.entry.clearfix ::text"
+        ).getall()
+
+        return {
+            "title": self.normalize_text(title_parts),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()
