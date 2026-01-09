@@ -176,6 +176,19 @@ class RojnewsExtractor(BaseExtractor):
         }
 
 
+class XebatExtractor(BaseExtractor):
+    def extract(self, response):
+        title_parts = response.css("h1.post-title.entry-title ::text").getall()
+
+        text_list = response.css("div.bdaia-post-content ::text").getall()
+
+        return {
+            "title": self.normalize_text(title_parts),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()
