@@ -19,6 +19,7 @@ from extractor.text_extractors import (
     KurdYekitiExtractor,
     KurdistanMediaExtractor,
     NlkNetMediaExtractor,
+    JinhaMediaExtractor,
 )
 
 
@@ -43,4 +44,5 @@ DOMAIN_TO_EXTRACTOR = {
     "kurdi.yekiti-media.org": KurdYekitiExtractor,
     "kurdistanmedia.com": KurdistanMediaExtractor,
     "nlka.net": NlkNetMediaExtractor,
+    "jinhaagency1.com": JinhaMediaExtractor
 }

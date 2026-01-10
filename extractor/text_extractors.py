@@ -273,6 +273,23 @@ class NlkNetMediaExtractor(BaseExtractor):
         }
 
 
+class JinhaMediaExtractor(BaseExtractor):
+    def extract(self, response):
+        title_parts = response.css(
+            "article.post div.post-content h2.entry-title ::text"
+        ).getall()
+
+        text_list = response.css(
+            "article.post div.post-content div.entry-content.row ::text"
+        ).getall()
+
+        return {
+            "title": self.normalize_text(title_parts),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()
