@@ -1,4 +1,4 @@
-# Scrapy settings for kurdish-all-data-collector project
+# Scrapy settings for kurdish-scrapy project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -13,16 +13,16 @@ import os
 dotenv.load_dotenv()
 
 
-BOT_NAME = "kurdish-all-data-collector"
+BOT_NAME = "kurdish-scrapy"
 
-SPIDER_MODULES = ["kurdish-all-data-collector.spiders"]
-NEWSPIDER_MODULE = "kurdish-all-data-collector.spiders"
+SPIDER_MODULES = ["kurdish-scrapy.spiders"]
+NEWSPIDER_MODULE = "kurdish-scrapy.spiders"
 
 ADDONS = {}
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = "kurdish-all-data-collector (+http://www.yourdomain.com)"
+# USER_AGENT = "kurdish-scrapy (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -47,14 +47,14 @@ DOWNLOAD_DELAY = 1
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
-#    "kurdish-all-data-collector.middlewares.SorjinBaseManualDataCollectorSpiderMiddleware": 543,
+#    "kurdish-scrapy.middlewares.SorjinBaseManualDataCollectorSpiderMiddleware": 543,
 # }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    "kurdish-all-data-collector.middlewares.MediaFilterMiddleware": 300,
-    "kurdish-all-data-collector.middlewares.ScrapeOpsFakeUserAgentMiddleware": 400,
+    "kurdish-scrapy.middlewares.MediaFilterMiddleware": 300,
+    "kurdish-scrapy.middlewares.ScrapeOpsFakeUserAgentMiddleware": 400,
 }
 
 # Enable or disable extensions
@@ -66,8 +66,8 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "kurdish-all-data-collector.pipelines.LenPipeline": 100,
-    "kurdish-all-data-collector.pipelines.LanguagePipeline": 200,
+    "kurdish-scrapy.pipelines.LenPipeline": 100,
+    "kurdish-scrapy.pipelines.LanguagePipeline": 200,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
