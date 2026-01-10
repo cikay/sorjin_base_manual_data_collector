@@ -258,6 +258,21 @@ class KurdistanMediaExtractor(BaseExtractor):
         }
 
 
+class NlkNetMediaExtractor(BaseExtractor):
+    def extract(self, response):
+        title_parts = response.css("div.entry-header h1.jeg_post_title ::text").getall()
+
+        text_list = response.css(
+            "div.jeg_inner_content div.content-inner.jeg_link_underline ::text"
+        ).getall()
+
+        return {
+            "title": self.normalize_text(title_parts),
+            "text": self.normalize_text(text_list),
+            "url": response.url,
+        }
+
+
 class XwebunExtractor(BaseExtractor):
     def extract(self, response):
         title = response.css("h1.tdb-title-text ::text").get()

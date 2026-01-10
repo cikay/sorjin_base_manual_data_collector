@@ -18,6 +18,7 @@ from extractor.text_extractors import (
     PortalNeteweExtractor,
     KurdYekitiExtractor,
     KurdistanMediaExtractor,
+    NlkNetMediaExtractor,
 )
 
 
@@ -41,4 +42,5 @@ DOMAIN_TO_EXTRACTOR = {
     "portal.netewe.com": PortalNeteweExtractor,
     "kurdi.yekiti-media.org": KurdYekitiExtractor,
     "kurdistanmedia.com": KurdistanMediaExtractor,
+    "nlka.net": NlkNetMediaExtractor,
 }
