@@ -68,11 +68,18 @@ def main():
 
     sys.excepthook = handle_uncaught
 
-    urls_to_crawl = json.loads(Path("kurdish_domains.json").read_text(encoding="utf-8"))
-    urls_to_crawl = normalize_domains(urls_to_crawl)
+    domains_dir = Path("domains")
+    domain_files = sorted(domains_dir.glob("*.json"))
+    if not domain_files:
+        raise FileNotFoundError(f"No domains files found in {domains_dir}/")
+    urls_to_crawl: set[str] = set()
+    for domain_file in domain_files:
+        urls = json.loads(domain_file.read_text(encoding="utf-8"))
+        urls_to_crawl |= normalize_domains(urls)
     logger.info(
-        "Starting crawler for %d domain(s). Output: %s, log file: %s",
+        "Starting crawler for %d domain(s) from %d file(s). Output: %s, log file: %s",
         len(urls_to_crawl),
+        len(domain_files),
         args.output,
         args.log_file,
     )

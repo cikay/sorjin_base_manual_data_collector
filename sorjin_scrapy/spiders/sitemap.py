@@ -4,7 +4,7 @@ import re
 from scrapy.spiders import SitemapSpider as BaseSitemapSpider
 
 from extractor.url_extractor import UrlExtractor
-from kurdish_scrapy import sitemap_discovery
+from sorjin_scrapy import sitemap_discovery
 
 SITEMAP_REGEX = re.compile(r"Sitemap:\s([^\r\n#]*)", re.MULTILINE)
 

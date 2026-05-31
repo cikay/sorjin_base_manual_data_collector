@@ -1,7 +1,7 @@
 import scrapy
 
 from extractor.url_extractor import UrlExtractor
-from kurdish_scrapy.spiders.base import BaseSpider
+from sorjin_scrapy.spiders.base import BaseSpider
 
 
 class RecursiveSpider(BaseSpider):

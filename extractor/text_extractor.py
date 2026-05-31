@@ -5,9 +5,9 @@ import json
 
 import trafilatura
 
-from kurdish_scrapy.lang_model import language_model
-from kurdish_scrapy.items import DataItem
-from kurdish_scrapy.loaders import DataItemLoader
+from sorjin_scrapy.lang_model import language_model
+from sorjin_scrapy.items import DataItem
+from sorjin_scrapy.loaders import DataItemLoader
 
 
 class ArticleExtractor:

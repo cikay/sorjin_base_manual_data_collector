@@ -1,4 +1,4 @@
-# Scrapy settings for kurdish_scrapy project
+# Scrapy settings for sorjin_scrapy project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -13,16 +13,16 @@ import os
 dotenv.load_dotenv()
 
 
-BOT_NAME = "kurdish_scrapy"
+BOT_NAME = "sorjin_scrapy"
 
-SPIDER_MODULES = ["kurdish_scrapy.spiders"]
-NEWSPIDER_MODULE = "kurdish_scrapy.spiders"
+SPIDER_MODULES = ["sorjin_scrapy.spiders"]
+NEWSPIDER_MODULE = "sorjin_scrapy.spiders"
 
 ADDONS = {}
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = "kurdish_scrapy (+http://www.yourdomain.com)"
+# USER_AGENT = "sorjin_scrapy (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -47,14 +47,14 @@ DOWNLOAD_DELAY = 1
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
-#    "kurdish_scrapy.middlewares.SorjinBaseManualDataCollectorSpiderMiddleware": 543,
+#    "sorjin_scrapy.middlewares.SorjinBaseManualDataCollectorSpiderMiddleware": 543,
 # }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    "kurdish_scrapy.middlewares.MediaFilterMiddleware": 300,
-    "kurdish_scrapy.middlewares.ScrapeOpsFakeUserAgentMiddleware": 400,
+    "sorjin_scrapy.middlewares.MediaFilterMiddleware": 300,
+    "sorjin_scrapy.middlewares.ScrapeOpsFakeUserAgentMiddleware": 400,
 }
 
 # Enable or disable extensions
@@ -66,8 +66,8 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "kurdish_scrapy.pipelines.LenPipeline": 100,
-    "kurdish_scrapy.pipelines.LanguagePipeline": 200,
+    "sorjin_scrapy.pipelines.LenPipeline": 100,
+    "sorjin_scrapy.pipelines.LanguagePipeline": 200,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -116,9 +116,14 @@ SCRAPEOPS_FAKE_USER_AGENT_ENABLED = True
 SCRAPEOPS_NUM_RESULTS = 10
 SCRAPEOPS_FAKE_USER_AGENT_ENDPOINT = "https://headers.scrapeops.io/v1/user-agents?"
 
-# keep only Kurdish-related languages
+# Keep only the low-resource languages we collect, identified with FastText
+# (facebook/fasttext-language-identification, FLORES-200) language codes:
 # kmr_Latn → Kurmanji (Northern Kurdish, Latin script)
 # ckb_Arab → Sorani (Central Kurdish, often in Arabic script)
 # diq_Latn → Zazaki (Latin script)
-ALLOWED_LANGS = os.getenv("ALLOWED_LANGS", "kmr_Latn,ckb_Arab,diq_Latn").split(",")
+# cym_Latn → Welsh (Latin script)
+# hrv_Latn → Croatian (Latin script)
+ALLOWED_LANGS = os.getenv(
+    "ALLOWED_LANGS", "kmr_Latn,ckb_Arab,diq_Latn,cym_Latn,hrv_Latn"
+).split(",")
 TEXT_MIN_WORD_COUNT = int(os.getenv("TEXT_MIN_WORD_COUNT", 100))
