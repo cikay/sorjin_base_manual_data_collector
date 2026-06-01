@@ -154,20 +154,20 @@ def _prefixes_from_link_scan(state: _ParseState, base_url: str, origin: str) -> 
 
 def discover_lang_prefixes(url: str) -> list[str]:
     """Fetch url and return URL prefixes for target-language sections."""
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+    }
     try:
-        resp = requests.get(
-            url,
-            timeout=10,
-            headers={"User-Agent": "Mozilla/5.0 (compatible; SorjinScrapy/1.0)"},
-        )
-    except RequestException:
-        logger.warning("Language probe failed for %s", url)
+        resp = requests.get(url, timeout=10, headers=headers)
+    except RequestException as exc:
+        logger.warning("Language probe failed for %s: %s", url, exc)
         return []
 
     state = _ParseState()
     _PageParser(state).feed(resp.text)
-
-    prefixes = _prefixes_from_head_hreflang(state, resp.url)
+    prefixes = _prefixes_from_head_hreflang(state, resp.url) 
     if prefixes:
         logger.info("hreflang links: %d prefix(es) for %s: %s", len(prefixes), url, prefixes)
         return prefixes

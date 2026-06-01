@@ -1,6 +1,7 @@
 import scrapy
 
 from extractor.url_extractor import UrlExtractor
+from sorjin_scrapy.settings import ALLOWED_LANGS
 from sorjin_scrapy.spiders.base import BaseSpider
 
 
@@ -21,8 +22,11 @@ class RecursiveSpider(BaseSpider):
         if result:
             self.logger.debug("Yielding article item: %s", response.url)
             yield result
-        else:
-            self.logger.debug("Extraction returned None: %s", response.url)
+
+        # When no URL filter was set (language probe failed), only follow links
+        # from target-language pages so non-target-language sites self-terminate.
+        if self.url_filter is None and result and result.get("lang") not in ALLOWED_LANGS:
+            return
 
         url_extractor = UrlExtractor()
         for url in url_extractor.extract(response):
