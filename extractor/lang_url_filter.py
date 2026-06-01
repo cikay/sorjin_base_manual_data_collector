@@ -99,16 +99,14 @@ class _PageParser(HTMLParser):
 
 
 def _lang_prefix_from_url(url: str, base_url: str) -> str | None:
-    """Return the URL prefix up to the first language-named path segment, or None."""
+    """Return the URL prefix if the first path segment is a language keyword, else None."""
     base_host = urlparse(base_url).netloc.lower().removeprefix("www.")
     parsed = urlparse(url)
     if parsed.netloc.lower().removeprefix("www.") != base_host:
         return None
     segments = [s for s in parsed.path.split("/") if s]
-    for i, seg in enumerate(segments):
-        if _normalize(seg) in HREFLANG:
-            prefix_path = "/" + "/".join(segments[: i + 1]) + "/"
-            return f"{parsed.scheme}://{parsed.netloc}{prefix_path}"
+    if segments and _normalize(segments[0]) in HREFLANG:
+        return f"{parsed.scheme}://{parsed.netloc}/{segments[0]}/"
     return None
 
 
