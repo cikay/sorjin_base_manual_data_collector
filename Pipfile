@@ -10,6 +10,7 @@ fasttext = "==0.9.3"
 trafilatura = "==2.0.0"
 scrapy = "==2.14.1"
 dotenv = "==0.9.9"
+datasets = "==4.8.5"
 
 [dev-packages]
 

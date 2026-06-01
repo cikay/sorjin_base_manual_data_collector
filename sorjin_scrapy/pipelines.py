@@ -9,7 +9,7 @@
 from scrapy.exceptions import DropItem
 
 
-from kurdish_scrapy.settings import ALLOWED_LANGS, TEXT_MIN_WORD_COUNT
+from sorjin_scrapy.settings import ALLOWED_LANGS, TEXT_MIN_WORD_COUNT
 
 
 class LenPipeline:
@@ -31,10 +31,10 @@ class LanguagePipeline:
         lang = item["lang"]
         if lang not in ALLOWED_LANGS:
             spider.logger.debug(
-                "Dropping non-Kurdish text (%s): %s",
+                "Dropping text in disallowed language (%s): %s",
                 lang,
                 item.get("url", "<unknown-url>"),
             )
-            raise DropItem(f"Item is not Kurdish ({lang})")
+            raise DropItem(f"Language not in ALLOWED_LANGS ({lang})")
 
         return item

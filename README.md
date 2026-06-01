@@ -1,14 +1,16 @@
-# Kurdish Text Data Collector
+# Sorjin Scrapy
 
-A [Scrapy](https://www.scrapy.org/) package based web scraper for collecting Kurdish text data from websites. The tool recursively crawls specified domains, extracts article content using [Trafilatura](https://trafilatura.readthedocs.io/), and filters results by language using Facebook's [FastText language identification model](https://huggingface.co/facebook/fasttext-language-identification).
+A [Scrapy](https://www.scrapy.org/) package based web scraper for collecting text data in low-resource languages from websites. The tool recursively crawls specified domains, extracts article content using [Trafilatura](https://trafilatura.readthedocs.io/), and filters results by language using Facebook's [FastText language identification model](https://huggingface.co/facebook/fasttext-language-identification).
 
 ## Features
 
 - **Recursive crawling** - Crawls entire websites following internal links
-- **Language detection** - Filters content by Kurdish language variants:
+- **Language detection** - Filters content by the configured language variants (FLORES-200 codes):
   - `kmr_Latn` - Kurmanji (Northern Kurdish, Latin script)
   - `ckb_Arab` - Sorani (Central Kurdish, Arabic script)
   - `diq_Latn` - Zazaki (Latin script)
+  - `cym_Latn` - Welsh (Latin script)
+  - `hrv_Latn` - Croatian (Latin script)
 - **Content extraction** - Extracts clean article text, title, and metadata using Trafilatura
 - **Smart filtering** - Skips media files, non-HTML content, and short texts
 - **Anti-bot protection** - Rotates user agents via ScrapeOps
@@ -24,8 +26,8 @@ A [Scrapy](https://www.scrapy.org/) package based web scraper for collecting Kur
 
 1. Clone the repository:
 ```bash
-git clone git@github.com:cikay/kurdish_scrapy.git
-cd kurdish_scrapy
+git clone git@github.com:cikay/sorjin_scrapy.git
+cd sorjin_scrapy
 ```
 
 2. Create and activate virtual environment:
@@ -41,7 +43,7 @@ pipenv install
 
 4. Create a `.env` file with your configuration:
 ```bash
-ALLOWED_LANGS="kmr_Latn,ckb_Arab,diq_Latn"
+ALLOWED_LANGS="kmr_Latn,ckb_Arab,diq_Latn,cym_Latn,hrv_Latn"
 TEXT_MIN_WORD_COUNT=100
 # Optional
 # SCRAPEOPS_API_KEY="your_api_key_here"
@@ -52,18 +54,20 @@ TEXT_MIN_WORD_COUNT=100
 | Variable | Description | Default |
 |----------|-------------|--------|
 | `SCRAPEOPS_API_KEY` | API key for ScrapeOps user agent rotation | Optional |
-| `ALLOWED_LANGS` | Comma-separated language codes to collect | `kmr_Latn,ckb_Arab,diq_Latn` |
+| `ALLOWED_LANGS` | Comma-separated language codes to collect | `kmr_Latn,ckb_Arab,diq_Latn,cym_Latn,hrv_Latn` |
 | `TEXT_MIN_WORD_COUNT` | Minimum word count for collected texts | `100` |
 
 Note: `SCRAPEOPS_API_KEY` is currently optional and scraping may still work without it. If this changes in the future and requests start failing, either:
 - obtain a valid ScrapeOps API key, or
-- remove `kurdish_scrapy.middlewares.ScrapeOpsFakeUserAgentMiddleware` from `DOWNLOADER_MIDDLEWARES` in `kurdish_scrapy/settings.py`.
+- remove `sorjin_scrapy.middlewares.ScrapeOpsFakeUserAgentMiddleware` from `DOWNLOADER_MIDDLEWARES` in `sorjin_scrapy/settings.py`.
 
 ## Usage
 
 ### Configure target domains
 
-Edit `kurdish_domains.json` and list the domains you want to crawl:
+Target domains are kept per language in `domains/<lang>.json` (e.g. `domains/ku.json`
+for Kurdish, `domains/cy.json` for Welsh, `domains/hr.json` for Croatian). Edit the
+file for the language you want and list the domains to crawl:
 
 ```json
 [
@@ -71,6 +75,9 @@ Edit `kurdish_domains.json` and list the domains you want to crawl:
     "https://ajansawelat.com/"
 ]
 ```
+
+To discover candidate domains for a language, run `python get_publishers.py`, which
+pulls the matching CulturaX splits and writes ranked domain lists to `publishers/<lang>.csv`.
 
 ### Run the app
 
@@ -84,7 +91,7 @@ For production/server runs, write logs to a file so crashes are preserved:
 python main.py --output output.csv --log-file logs/crawler.log --log-level INFO
 ```
 
-`main.py` reads `kurdish_domains.json` and passes those domains to `run_crawler.py`.
+`main.py` reads every `domains/*.json` file and passes the combined domains to `run_crawler.py`.
 For each domain, the runner tries `SitemapSpider` first (using `robots.txt` and common sitemap paths). If no sitemap is found, it falls back to `RecursiveSpider`.
 
 Supported output formats: `.csv`, `.json`, `.jsonl`
@@ -133,7 +140,7 @@ The spider outputs the following fields:
 ## Project Structure
 
 ```
-├── kurdish_scrapy/
+├── sorjin_scrapy/
 │   ├── spiders/
 │   │   ├── sitemap.py        # Sitemap-based spider
 │   │   ├── recursive.py      # Recursive fallback spider
@@ -149,7 +156,9 @@ The spider outputs the following fields:
 │   └── protocol.py           # Extractor protocol interface
 ├── run_crawler.py            # Spider selection + feed setup
 ├── main.py                   # CLI entrypoint
-├── kurdish_domains.json      # Crawl target domains
+├── domains/                  # Per-language crawl target lists (ku.json, cy.json, hr.json)
+├── publishers/               # Candidate domains discovered from CulturaX per language
+├── get_publishers.py         # Build publishers/<lang>.csv from CulturaX
 ├── bencmark.py               # Sitemap vs recursive benchmark runner
 ├── rows_count.py             # Utility for data statistics
 ├── Pipfile                   # Dependencies

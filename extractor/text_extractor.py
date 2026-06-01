@@ -5,9 +5,9 @@ import json
 
 import trafilatura
 
-from kurdish_scrapy.lang_model import language_model
-from kurdish_scrapy.items import DataItem
-from kurdish_scrapy.loaders import DataItemLoader
+from sorjin_scrapy.lang_model import language_model
+from sorjin_scrapy.items import DataItem
+from sorjin_scrapy.loaders import DataItemLoader
 
 
 class ArticleExtractor:
@@ -78,7 +78,7 @@ class ArticleExtractor:
         loader.add_value("word_count", word_count)
         loader.add_value("lang", lang)
         loader.add_value("lang_score", lang_score)
-
+        loader.add_value("publish_date", output.get("date"))
         loader.add_value("source_type", "news")
 
         return loader.load_item()

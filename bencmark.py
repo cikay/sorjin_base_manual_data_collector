@@ -11,8 +11,8 @@ from scrapy import signals
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
-from kurdish_scrapy.spiders.recursive import RecursiveSpider
-from kurdish_scrapy.spiders.sitemap import SitemapSpider
+from sorjin_scrapy.spiders.recursive import RecursiveSpider
+from sorjin_scrapy.spiders.sitemap import SitemapSpider
 from extractor.protocol import ContentExtractorProtocol
 
 

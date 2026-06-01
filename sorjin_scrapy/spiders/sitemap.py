@@ -1,18 +1,18 @@
-import re
-
-
 from scrapy.spiders import SitemapSpider as BaseSitemapSpider
 
 from extractor.url_extractor import UrlExtractor
-from kurdish_scrapy import sitemap_discovery
-
-SITEMAP_REGEX = re.compile(r"Sitemap:\s([^\r\n#]*)", re.MULTILINE)
+from sorjin_scrapy import sitemap_discovery
 
 
 class SitemapSpider(BaseSitemapSpider):
     name = "sitemap_spider"
 
-    def __init__(self, content_extractor, sitemap_urls, *args, **kwargs):
+    def __init__(self, content_extractor, sitemap_urls, url_filter=None, *args, **kwargs):
+        # Set sitemap_rules before super().__init__ so Scrapy compiles _cbs from it
+        if url_filter is not None:
+            self.sitemap_rules = [(url_filter.pattern, "parse")]
+        else:
+            self.sitemap_rules = [("", "parse")]
         super().__init__(*args, **kwargs)
         self.content_extractor = content_extractor
         self.sitemap_urls = sitemap_urls
