@@ -7,6 +7,10 @@ from sorjin_scrapy.spiders.base import BaseSpider
 class RecursiveSpider(BaseSpider):
     name = "recursive_spider"
 
+    def __init__(self, url, content_extractor=None, url_filter=None, *args, **kwargs):
+        super().__init__(url=url, content_extractor=content_extractor, *args, **kwargs)
+        self.url_filter = url_filter
+
     def parse(self, response):
         self.logger.debug("Processing %s", response.url)
         if not UrlExtractor.content_type(response):
@@ -20,12 +24,7 @@ class RecursiveSpider(BaseSpider):
         else:
             self.logger.debug("Extraction returned None: %s", response.url)
 
-        # Follow internal links recursively when enabled.
         url_extractor = UrlExtractor()
-        current_page_contained_urls = url_extractor.extract(response)
-        for current_page_contained_url in current_page_contained_urls:
-            yield scrapy.Request(
-                current_page_contained_url,
-                callback=self.parse,
-                dont_filter=False,
-            )
+        for url in url_extractor.extract(response):
+            if self.url_filter is None or self.url_filter.search(url):
+                yield scrapy.Request(url, callback=self.parse, dont_filter=False)

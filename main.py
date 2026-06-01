@@ -33,12 +33,21 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def normalize_domains(domains: list) -> set[str]:
-    return {
-        domain.strip().rstrip("/")
-        for domain in domains
-        if isinstance(domain, str) and domain.strip()
-    }
+def load_urls(domains_dir: Path) -> list[str]:
+    domain_files = sorted(domains_dir.glob("*.json"))
+    if not domain_files:
+        raise FileNotFoundError(f"No domain files found in {domains_dir}/")
+
+    seen: set[str] = set()
+    urls: list[str] = []
+    for domain_file in domain_files:
+        for entry in json.loads(domain_file.read_text(encoding="utf-8")):
+            if isinstance(entry, str):
+                url = entry.strip().rstrip("/")
+                if url and url not in seen:
+                    seen.add(url)
+                    urls.append(url)
+    return urls
 
 
 def configure_logging(log_file: str, log_level: str) -> None:
@@ -68,18 +77,10 @@ def main():
 
     sys.excepthook = handle_uncaught
 
-    domains_dir = Path("domains")
-    domain_files = sorted(domains_dir.glob("*.json"))
-    if not domain_files:
-        raise FileNotFoundError(f"No domains files found in {domains_dir}/")
-    urls_to_crawl: set[str] = set()
-    for domain_file in domain_files:
-        urls = json.loads(domain_file.read_text(encoding="utf-8"))
-        urls_to_crawl |= normalize_domains(urls)
+    urls = load_urls(Path("domains"))
     logger.info(
-        "Starting crawler for %d domain(s) from %d file(s). Output: %s, log file: %s",
-        len(urls_to_crawl),
-        len(domain_files),
+        "Starting crawler for %d domain(s). Output: %s, log file: %s",
+        len(urls),
         args.output,
         args.log_file,
     )
@@ -87,7 +88,7 @@ def main():
         run_crawler(
             output_path=args.output,
             content_extractor=ArticleExtractor(),
-            urls_to_crawl=urls_to_crawl,
+            urls=urls,
             log_file=args.log_file,
             log_level=args.log_level,
         )
