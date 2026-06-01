@@ -78,7 +78,7 @@ class ArticleExtractor:
         loader.add_value("word_count", word_count)
         loader.add_value("lang", lang)
         loader.add_value("lang_score", lang_score)
-
+        loader.add_value("publish_date", output.get("date"))
         loader.add_value("source_type", "news")
 
         return loader.load_item()

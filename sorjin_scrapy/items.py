@@ -15,3 +15,4 @@ class DataItem(scrapy.Item):
     lang: str = scrapy.Field()
     lang_score: float = scrapy.Field()
     source_type: str = scrapy.Field()
+    publish_date: str = scrapy.Field()
