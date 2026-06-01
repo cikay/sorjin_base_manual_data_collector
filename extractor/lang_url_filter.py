@@ -150,8 +150,13 @@ def _prefixes_from_link_scan(state: _ParseState, base_url: str, origin: str) -> 
     return prefixes
 
 
-def discover_lang_prefixes(url: str) -> list[str]:
-    """Fetch url and return URL prefixes for target-language sections."""
+def discover_lang_prefixes(url: str) -> list[str] | None:
+    """Fetch url and return URL prefixes for target-language sections.
+
+    Returns a non-empty list when specific prefixes are found, an empty list
+    when the page is reachable but no prefix was identified, or None when the
+    page could not be fetched (caller should skip the domain).
+    """
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -161,11 +166,12 @@ def discover_lang_prefixes(url: str) -> list[str]:
         resp = requests.get(url, timeout=10, headers=headers)
     except RequestException as exc:
         logger.warning("Language probe failed for %s: %s", url, exc)
-        return []
+        return None
 
     state = _ParseState()
     _PageParser(state).feed(resp.text)
-    prefixes = _prefixes_from_head_hreflang(state, resp.url) 
+
+    prefixes = _prefixes_from_head_hreflang(state, resp.url)
     if prefixes:
         logger.info("hreflang links: %d prefix(es) for %s: %s", len(prefixes), url, prefixes)
         return prefixes
@@ -185,7 +191,7 @@ def discover_lang_prefixes(url: str) -> list[str]:
         logger.info("link scan: %d prefix(es) for %s: %s", len(prefixes), url, prefixes)
         return prefixes
 
-    logger.info("No language prefixes found for %s", url)
+    logger.info("No language prefix found for %s", url)
     return []
 
 
