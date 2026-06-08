@@ -25,8 +25,6 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 # ku → Kurdish, cy → Welsh, hr → Croatian.
 LANGUAGES = {
     "ku": "Kurdish",
-    "cy": "Welsh",
-    "hr": "Croatian",
 }
 
 OUTPUT_DIR = Path("publishers")

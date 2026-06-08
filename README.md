@@ -65,9 +65,7 @@ Note: `SCRAPEOPS_API_KEY` is currently optional and scraping may still work with
 
 ### Configure target domains
 
-Target domains are kept per language in `domains/<lang>.json` (e.g. `domains/ku.json`
-for Kurdish, `domains/cy.json` for Welsh, `domains/hr.json` for Croatian). Edit the
-file for the language you want and list the domains to crawl:
+Target domains are kept in `domains.json`, a single flat list of URLs to crawl:
 
 ```json
 [
@@ -91,7 +89,7 @@ For production/server runs, write logs to a file so crashes are preserved:
 python main.py --output output.csv --log-file logs/crawler.log --log-level INFO
 ```
 
-`main.py` reads every `domains/*.json` file and passes the combined domains to `run_crawler.py`.
+`main.py` reads `domains.json` and passes the domains to `run_crawler.py`.
 For each domain, the runner tries `SitemapSpider` first (using `robots.txt` and common sitemap paths). If no sitemap is found, it falls back to `RecursiveSpider`.
 
 Supported output formats: `.csv`, `.json`, `.jsonl`
@@ -156,7 +154,7 @@ The spider outputs the following fields:
 │   └── protocol.py           # Extractor protocol interface
 ├── run_crawler.py            # Spider selection + feed setup
 ├── main.py                   # CLI entrypoint
-├── domains/                  # Per-language crawl target lists (ku.json, cy.json, hr.json)
+├── domains.json              # Flat list of crawl target URLs
 ├── publishers/               # Candidate domains discovered from CulturaX per language
 ├── get_publishers.py         # Build publishers/<lang>.csv from CulturaX
 ├── bencmark.py               # Sitemap vs recursive benchmark runner

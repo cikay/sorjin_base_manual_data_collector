@@ -1,12 +1,15 @@
 import logging
 from pathlib import Path
 
+import requests
+from requests.exceptions import RequestException
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from twisted.python.failure import Failure
 
 from sorjin_scrapy.spiders.recursive import RecursiveSpider
 from sorjin_scrapy.spiders.sitemap import SitemapSpider
+from sorjin_scrapy.settings import ALLOWED_LANGS
 from extractor.protocol import ContentExtractorProtocol
 from extractor.lang_url_filter import discover_lang_prefixes, build_url_filter
 
@@ -31,14 +34,37 @@ def _infer_feed_format(output_path: str) -> str:
     return feed_format
 
 
-def _build_url_filter_for_domain(url: str):
+def get_root_page_lang(url: str, content_extractor: ContentExtractorProtocol) -> str | None:
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+    }
+    try:
+        resp = requests.get(url, timeout=10, headers=headers)
+    except RequestException:
+        return None
+    result = content_extractor.extract(resp.text, url)
+    return result.get("lang") if result else None
+
+
+def _build_url_filter_for_domain(url: str, content_extractor: ContentExtractorProtocol):
     prefixes = discover_lang_prefixes(url)
-    url_filter = build_url_filter(prefixes)
-    if url_filter is None:
-        logger.info("No URL filter for %s — crawling entire site", url)
-    else:
+    if prefixes is None:
+        logger.info("Skipping %s — homepage unreachable", url)
+        return None, True
+    if prefixes:
+        url_filter = build_url_filter(prefixes)
         logger.info("URL filter for %s: %s", url, url_filter.pattern)
-    return url_filter
+        return url_filter, False
+    # No prefix found: scrape the root page and detect its language
+    lang = get_root_page_lang(url, content_extractor)
+    if lang and lang in ALLOWED_LANGS:
+        logger.info(f"Root page is target language for {url} — crawling entire site")
+        return None, False
+
+    logger.info(f"Skipping {url} — root page is {lang} and not a target language")
+    return None, True
 
 
 def run_crawler(
@@ -82,7 +108,9 @@ def run_crawler(
 
     logger.info("Scheduling spiders for %d domain(s)", len(urls))
     for url in urls:
-        url_filter = _build_url_filter_for_domain(url)
+        url_filter, skip = _build_url_filter_for_domain(url, content_extractor)
+        if skip:
+            continue
         sitemap_urls = SitemapSpider.get_sitemap_urls(url)
         if sitemap_urls:
             logger.info(

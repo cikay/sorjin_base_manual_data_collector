@@ -17,11 +17,9 @@ HREFLANG = frozenset([
     "ku", "kmr", "kurdish", "kurmanji", "kurmanci", "kurdi", "kirmancki",
     "ckb", "sorani",
     "zza", "diq", "zazaki",
-    "cy", "welsh",
-    "hr", "croatian",
 ])
 
-_LANG_CONTAINER_RE = re.compile(r"\blang\b|\bziman\b", re.IGNORECASE)
+_LANG_CONTAINER_RE = re.compile(r"lang|ziman", re.IGNORECASE)
 
 
 def _normalize(text: str) -> str:
@@ -99,16 +97,14 @@ class _PageParser(HTMLParser):
 
 
 def _lang_prefix_from_url(url: str, base_url: str) -> str | None:
-    """Return the URL prefix up to the first language-named path segment, or None."""
+    """Return the URL prefix if the first path segment is a language keyword, else None."""
     base_host = urlparse(base_url).netloc.lower().removeprefix("www.")
     parsed = urlparse(url)
     if parsed.netloc.lower().removeprefix("www.") != base_host:
         return None
     segments = [s for s in parsed.path.split("/") if s]
-    for i, seg in enumerate(segments):
-        if _normalize(seg) in HREFLANG:
-            prefix_path = "/" + "/".join(segments[: i + 1]) + "/"
-            return f"{parsed.scheme}://{parsed.netloc}{prefix_path}"
+    if segments and _normalize(segments[0]) in HREFLANG:
+        return f"{parsed.scheme}://{parsed.netloc}/{segments[0]}/"
     return None
 
 
@@ -152,17 +148,23 @@ def _prefixes_from_link_scan(state: _ParseState, base_url: str, origin: str) -> 
     return prefixes
 
 
-def discover_lang_prefixes(url: str) -> list[str]:
-    """Fetch url and return URL prefixes for target-language sections."""
+def discover_lang_prefixes(url: str) -> list[str] | None:
+    """Fetch url and return URL prefixes for target-language sections.
+
+    Returns a non-empty list when specific prefixes are found, an empty list
+    when the page is reachable but no prefix was identified, or None when the
+    page could not be fetched (caller should skip the domain).
+    """
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+    }
     try:
-        resp = requests.get(
-            url,
-            timeout=10,
-            headers={"User-Agent": "Mozilla/5.0 (compatible; SorjinScrapy/1.0)"},
-        )
-    except RequestException:
-        logger.warning("Language probe failed for %s", url)
-        return []
+        resp = requests.get(url, timeout=10, headers=headers)
+    except RequestException as exc:
+        logger.warning("Language probe failed for %s: %s", url, exc)
+        return None
 
     state = _ParseState()
     _PageParser(state).feed(resp.text)
@@ -187,7 +189,7 @@ def discover_lang_prefixes(url: str) -> list[str]:
         logger.info("link scan: %d prefix(es) for %s: %s", len(prefixes), url, prefixes)
         return prefixes
 
-    logger.info("No language prefixes found for %s", url)
+    logger.info("No language prefix found for %s", url)
     return []
 
 
@@ -195,4 +197,4 @@ def build_url_filter(prefixes: list[str]) -> re.Pattern | None:
     """Build a compiled regex filter from URL prefixes. Returns None if empty."""
     if not prefixes:
         return None
-    return re.compile("|".join(re.escape(p) for p in prefixes))
+    return re.compile("|".join(re.escape(p.rstrip("/")) + r"/?" for p in prefixes))

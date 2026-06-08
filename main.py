@@ -33,20 +33,18 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_urls(domains_dir: Path) -> list[str]:
-    domain_files = sorted(domains_dir.glob("*.json"))
-    if not domain_files:
-        raise FileNotFoundError(f"No domain files found in {domains_dir}/")
+def load_urls(domains_file: Path) -> list[str]:
+    if not domains_file.is_file():
+        raise FileNotFoundError(f"Domains file not found: {domains_file}")
 
     seen: set[str] = set()
     urls: list[str] = []
-    for domain_file in domain_files:
-        for entry in json.loads(domain_file.read_text(encoding="utf-8")):
-            if isinstance(entry, str):
-                url = entry.strip().rstrip("/")
-                if url and url not in seen:
-                    seen.add(url)
-                    urls.append(url)
+    for entry in json.loads(domains_file.read_text(encoding="utf-8")):
+        if isinstance(entry, str):
+            url = entry.strip().rstrip("/")
+            if url and url not in seen:
+                seen.add(url)
+                urls.append(url)
     return urls
 
 
@@ -77,7 +75,7 @@ def main():
 
     sys.excepthook = handle_uncaught
 
-    urls = load_urls(Path("domains"))
+    urls = load_urls(Path("domains.json"))
     logger.info(
         "Starting crawler for %d domain(s). Output: %s, log file: %s",
         len(urls),
