@@ -19,7 +19,7 @@ HREFLANG = frozenset([
     "zza", "diq", "zazaki",
 ])
 
-_LANG_CONTAINER_RE = re.compile(r"\blang\b|\bziman\b", re.IGNORECASE)
+_LANG_CONTAINER_RE = re.compile(r"lang|ziman", re.IGNORECASE)
 
 
 def _normalize(text: str) -> str:
@@ -197,4 +197,4 @@ def build_url_filter(prefixes: list[str]) -> re.Pattern | None:
     """Build a compiled regex filter from URL prefixes. Returns None if empty."""
     if not prefixes:
         return None
-    return re.compile("|".join(re.escape(p) for p in prefixes))
+    return re.compile("|".join(re.escape(p.rstrip("/")) + r"/?" for p in prefixes))
