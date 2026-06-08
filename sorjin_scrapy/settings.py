@@ -121,13 +121,9 @@ SCRAPEOPS_FAKE_USER_AGENT_ENDPOINT = "https://headers.scrapeops.io/v1/user-agent
 # kmr_Latn → Kurmanji (Northern Kurdish, Latin script)
 # ckb_Arab → Sorani (Central Kurdish, often in Arabic script)
 # diq_Latn → Zazaki (Latin script)
-# cym_Latn → Welsh (Latin script)
-# hrv_Latn → Croatian (Latin script)
 ALLOWED_LANGS = [
     "kmr_Latn",
     "ckb_Arab",
     "diq_Latn",
-    "cym_Latn",
-    "hrv_Latn",
 ]
 TEXT_MIN_WORD_COUNT = int(os.getenv("TEXT_MIN_WORD_COUNT", 100))

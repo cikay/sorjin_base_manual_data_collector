@@ -17,8 +17,6 @@ HREFLANG = frozenset([
     "ku", "kmr", "kurdish", "kurmanji", "kurmanci", "kurdi", "kirmancki",
     "ckb", "sorani",
     "zza", "diq", "zazaki",
-    "cy", "welsh",
-    "hr", "croatian",
 ])
 
 _LANG_CONTAINER_RE = re.compile(r"\blang\b|\bziman\b", re.IGNORECASE)
