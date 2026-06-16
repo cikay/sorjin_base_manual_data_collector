@@ -1,0 +1,34 @@
+# Version control / metadata
+.git
+.github
+.gitignore
+
+# Local secrets — pass these at runtime via env_file / -e instead of baking them in
+.env
+
+# Python caches and virtualenvs
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Large local data / artifacts that don't belong in the image
+real_data/
+.collected_data/
+.benchmarks/
+logs/
+*.log
+output.csv
+news.csv
+
+# OS / editor cruft
+.DS_Store
+.Ds_Store
+**/.DS_Store
+.claude/
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+docker-compose.yml

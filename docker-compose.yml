@@ -1,0 +1,19 @@
+services:
+  crawler:
+    build: .
+    image: sorjin-crawler
+    # Picks up TEXT_MIN_WORD_COUNT, SCRAPEOPS_API_KEY, HF_TOKEN, etc.
+    # HF_TOKEN enables a faster authenticated GlotLID model download.
+    env_file:
+      - .env
+    volumes:
+      # Output (.csv/.json/.jsonl) and logs are persisted here.
+      - crawler-data:/data
+      # GlotLID model cache — downloaded once on first run, reused after.
+      - hf-cache:/hf-cache
+    # Override the default args here if you want a different format/paths, e.g.:
+    # command: ["--output", "/data/output.jsonl", "--log-file", "/data/logs/crawler.log", "--log-level", "DEBUG"]
+
+volumes:
+  crawler-data:
+  hf-cache:

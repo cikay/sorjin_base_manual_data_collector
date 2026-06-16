@@ -1,16 +1,17 @@
 """Extract candidate publisher domains from CulturaX for each target language.
 
 For every configured low-resource language this loads the matching CulturaX
-split, counts how often each domain appears, and writes a ranked CSV to
-``publishers/<lang>.csv``. Those domains are a starting point for curating the
-crawl target lists in ``domains/<lang>.json``.
+split, counts how often each domain appears, and writes the domains that occur
+more than 100 times to ``domains.json``. Those domains are a starting point for
+curating the crawl target lists.
 """
 
+import json
 import os
+from collections import Counter
 from pathlib import Path
 from urllib.parse import urlparse
 
-import pandas as pd
 from datasets import load_dataset
 from dotenv import load_dotenv
 
@@ -27,29 +28,38 @@ LANGUAGES = {
     "ku": "Kurdish",
 }
 
-OUTPUT_DIR = Path("publishers")
+OUTPUT_PATH = Path("domains.json")
+
+# Only keep domains that appear more than this many times in the dataset.
+MIN_COUNT = 100
 
 
 def extract_domain(url: str) -> str | None:
-    """Return the network location (domain) of a URL, or None on failure."""
+    """Return the domain of a URL with an ``https://`` prefix, or None on failure.
+
+    Strips a leading ``www.`` so ``www.example.com`` and ``example.com`` collapse
+    to the same domain.
+    """
     try:
-        return urlparse(url).netloc
+        netloc = urlparse(url).netloc
     except Exception:
         return None
+    if not netloc:
+        return None
+    netloc = netloc.removeprefix("www.")
+    return f"https://{netloc}"
 
 
-def domain_counts_for_language(lang: str) -> pd.DataFrame:
-    """Load a CulturaX language split and count documents per domain."""
+def count_domains_for_language(lang: str, counter: Counter) -> None:
+    """Load a CulturaX language split and accumulate domain counts into ``counter``."""
     dataset = load_dataset("uonlp/CulturaX", lang, split="train", token=HF_TOKEN)
     dataset = dataset.map(
         lambda x: {"domain": extract_domain(x["url"])}, num_proc=4
     )
 
-    df = pd.DataFrame({"domain": list(dataset["domain"])}).dropna()
-
-    counts = df.value_counts().reset_index()
-    counts.columns = ["domain", "count"]
-    return counts.sort_values(by="count", ascending=False).reset_index(drop=True)
+    for domain in dataset["domain"]:
+        if domain is not None:
+            counter[domain] += 1
 
 
 def main() -> None:
@@ -59,17 +69,26 @@ def main() -> None:
             "https://huggingface.co/datasets/uonlp/CulturaX and add HF_TOKEN to your .env file."
         )
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    counter: Counter = Counter()
 
     for lang, name in LANGUAGES.items():
         print(f"Processing {name} ({lang})...")
-        counts = domain_counts_for_language(lang)
+        count_domains_for_language(lang, counter)
 
-        output_path = OUTPUT_DIR / f"{lang}.csv"
-        counts.to_csv(output_path, index=False)
+    # Keep only domains that occur more than MIN_COUNT times, ranked by
+    # frequency. A set guards against any duplicate entries in the output.
+    seen: set[str] = set()
+    domains = []
+    for domain, count in counter.most_common():
+        if count > MIN_COUNT and domain not in seen:
+            seen.add(domain)
+            domains.append(domain)
 
-        print(f"✅ Saved {len(counts)} {name} domains to {output_path}")
-        print(counts.head(10))
+    OUTPUT_PATH.write_text(
+        json.dumps(domains, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    print(f"✅ Saved {len(domains)} domains (>{MIN_COUNT} entries) to {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":

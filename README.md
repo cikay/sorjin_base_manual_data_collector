@@ -94,6 +94,87 @@ For each domain, the runner tries `SitemapSpider` first (using `robots.txt` and 
 
 Supported output formats: `.csv`, `.json`, `.jsonl`
 
+### Run with Docker
+
+The crawler is packaged so it runs without a local Python/Pipenv setup. The
+image bakes in the dependencies; the GlotLID language model is downloaded on the
+first run into `/hf-cache` (set `HF_TOKEN` for a faster authenticated download)
+and reused afterwards. Crawl output and logs are written to `/data`. Mount
+volumes on both paths so the model and results survive container restarts and
+removals.
+
+Build the image:
+
+```bash
+docker build -t sorjin-crawler .
+```
+
+#### With docker compose (recommended)
+
+`docker-compose.yml` defines a named volume `crawler-data` mounted at `/data`
+and loads `.env` for configuration. Run:
+
+```bash
+docker compose run --rm crawler
+```
+
+By default this writes `/data/output.csv` and `/data/logs/crawler.log` inside the
+`crawler-data` volume. Override the command to change format/paths or verbosity:
+
+```bash
+docker compose run --rm crawler \
+  --output /data/output.jsonl --log-file /data/logs/crawler.log --log-level DEBUG
+```
+
+`docker compose up -d` runs the service detached but leaves a stopped container
+behind on exit (Compose has no auto-remove); clean it up with `docker compose
+down`. For a detached run that deletes itself when the crawl finishes, use plain
+`docker run -d --rm` (see below).
+
+#### With plain docker
+
+Mount a host directory (or named volume) at `/data`, plus a volume at `/hf-cache`
+so the language model is downloaded only once:
+
+```bash
+# persist to ./real_data on the host
+docker run --rm --env-file .env \
+  -v "$(pwd)/real_data:/data" -v hf-cache:/hf-cache sorjin-crawler
+
+# or to named volumes
+docker run --rm --env-file .env \
+  -v crawler-data:/data -v hf-cache:/hf-cache sorjin-crawler
+```
+
+Run detached and have the container delete itself when the crawl finishes
+(`docker run` honors `--rm` together with `-d`, unlike `docker compose`). Reuse
+the Compose-created volumes by their project-prefixed names so the cached model
+and prior output carry over:
+
+```bash
+docker run -d --rm --name sorjin-crawler --env-file .env \
+  -v sorjin_scrapy_crawler-data:/data -v sorjin_scrapy_hf-cache:/hf-cache \
+  sorjin-crawler
+
+docker logs -f sorjin-crawler   # follow progress
+```
+
+Inspect the results in a named volume:
+
+```bash
+docker run --rm -v crawler-data:/data alpine ls -la /data /data/logs
+```
+
+Notes:
+
+- The default `ENTRYPOINT` is `python main.py`; anything after the image name is
+  passed as CLI args (`--output`, `--log-file`, `--log-level`). Keep paths under
+  `/data` so they land in the volume.
+- `domains.json` is copied into the image at build time. To crawl a different
+  list without rebuilding, mount it: `-v "$(pwd)/domains.json:/app/domains.json"`.
+- `.env` is excluded from the image (see `.dockerignore`); pass configuration at
+  run time via `--env-file .env` or compose's `env_file`.
+
 ### Check collected data statistics
 
 ```bash
@@ -160,5 +241,8 @@ The spider outputs the following fields:
 ├── bencmark.py               # Sitemap vs recursive benchmark runner
 ├── rows_count.py             # Utility for data statistics
 ├── Pipfile                   # Dependencies
+├── Dockerfile                # Container build (deps + GlotLID model baked in)
+├── docker-compose.yml        # Compose service with a /data output volume
+├── .dockerignore             # Build-context excludes (.git, real_data, .env, …)
 └── .env                      # Environment variables (create this)
 ```
