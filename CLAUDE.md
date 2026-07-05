@@ -30,7 +30,7 @@ python bencmark.py --domain https://www.nuhev.com --sitemap s.csv --recursive r.
 python get_publishers.py                                                # discover candidate domains from CulturaX (needs HF_TOKEN)
 ```
 
-There is no test suite, linter, or build step. `.env` (loaded by `sorjin_scrapy/settings.py`) holds `SCRAPEOPS_API_KEY` (optional), `TEXT_MIN_WORD_COUNT`, and `HF_TOKEN` (for `get_publishers.py` only).
+There is no test suite, linter, or build step. `.env` (loaded by `kurdish_scrapy/settings.py`) holds `SCRAPEOPS_API_KEY` (optional), `TEXT_MIN_WORD_COUNT`, and `HF_TOKEN` (for `get_publishers.py` only).
 
 ## Architecture
 
@@ -43,7 +43,7 @@ The flow is **not** the standard `scrapy crawl` CLI. `main.py` → `run_crawler.
    - **No prefix, reachable** → fetch the root page, detect its language; crawl the whole site only if it's a target language, else skip.
 2. If a sitemap is discoverable (`sitemap_discovery.py`: robots.txt first, then `SITEMAP_PATTERNS`), use `SitemapSpider`; otherwise fall back to `RecursiveSpider`.
 
-**Spiders (`sorjin_scrapy/spiders/`):** Both extract via `content_extractor` and yield items. `SitemapSpider` wraps the `url_filter` regex into `sitemap_rules` (must be set before `super().__init__`). `RecursiveSpider` follows in-domain links matching `url_filter`; when there's no filter it self-terminates by only following links from pages already detected as a target language.
+**Spiders (`kurdish_scrapy/spiders/`):** Both extract via `content_extractor` and yield items. `SitemapSpider` wraps the `url_filter` regex into `sitemap_rules` (must be set before `super().__init__`). `RecursiveSpider` follows in-domain links matching `url_filter`; when there's no filter it self-terminates by only following links from pages already detected as a target language.
 
 **Extraction (`extractor/`):** `ArticleExtractor.extract` runs Trafilatura once (`output_format="json"`), runs the FastText model on the text, and populates a `DataItem` via the item loader. `UrlExtractor` handles link extraction plus media/non-HTML filtering (also used by `MediaFilterMiddleware`). `protocol.py` defines `ContentExtractorProtocol` — the seam that lets `run_crawler`/spiders stay decoupled from Trafilatura.
 
@@ -53,7 +53,7 @@ The flow is **not** the standard `scrapy crawl` CLI. `main.py` → `run_crawler.
 
 ## Key config points
 
-- **Target languages** are hardcoded in `ALLOWED_LANGS` in `sorjin_scrapy/settings.py` (not env-driven, despite the README's `ALLOWED_LANGS` env var). Changing the set of collected languages means editing this list and usually `HREFLANG` in `extractor/lang_url_filter.py` (the set of language keywords matched in URLs/menus).
+- **Target languages** are hardcoded in `ALLOWED_LANGS` in `kurdish_scrapy/settings.py` (not env-driven, despite the README's `ALLOWED_LANGS` env var). Changing the set of collected languages means editing this list and usually `HREFLANG` in `extractor/lang_url_filter.py` (the set of language keywords matched in URLs/menus).
 - Crawl politeness: `CONCURRENT_REQUESTS_PER_DOMAIN = 1`, `DOWNLOAD_DELAY = 1`, `ROBOTSTXT_OBEY = True`.
 - `ScrapeOpsFakeUserAgentMiddleware` rotates user agents; it self-disables if `SCRAPEOPS_API_KEY` is unset. Remove it from `DOWNLOADER_MIDDLEWARES` if it ever blocks runs.
 - Feeds use `overwrite: False`, so reusing an output file appends to it.

@@ -1,7 +1,7 @@
 from scrapy.spiders import SitemapSpider as BaseSitemapSpider
 
 from extractor.url_extractor import UrlExtractor
-from sorjin_scrapy import sitemap_discovery
+from kurdish_scrapy import sitemap_discovery
 
 
 class SitemapSpider(BaseSitemapSpider):

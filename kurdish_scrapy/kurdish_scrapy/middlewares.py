@@ -11,7 +11,7 @@ from scrapy.exceptions import IgnoreRequest
 from extractor.url_extractor import UrlExtractor
 
 
-class SorjinBaseManualDataCollectorSpiderMiddleware:
+class KurdishBaseManualDataCollectorSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
     # passed objects.
@@ -55,7 +55,7 @@ class SorjinBaseManualDataCollectorSpiderMiddleware:
         spider.logger.info("Spider opened: %s" % spider.name)
 
 
-class SorjinBaseManualDataCollectorDownloaderMiddleware:
+class KurdishBaseManualDataCollectorDownloaderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.

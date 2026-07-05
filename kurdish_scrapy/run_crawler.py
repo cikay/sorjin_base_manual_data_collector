@@ -7,9 +7,9 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from twisted.python.failure import Failure
 
-from sorjin_scrapy.spiders.recursive import RecursiveSpider
-from sorjin_scrapy.spiders.sitemap import SitemapSpider
-from sorjin_scrapy.settings import ALLOWED_LANGS
+from kurdish_scrapy.spiders.recursive import RecursiveSpider
+from kurdish_scrapy.spiders.sitemap import SitemapSpider
+from kurdish_scrapy.settings import ALLOWED_LANGS
 from extractor.protocol import ContentExtractorProtocol
 from extractor.lang_url_filter import discover_lang_prefixes, build_url_filter
 
