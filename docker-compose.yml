@@ -1,7 +1,7 @@
 services:
   crawler:
     build: .
-    image: sorjin-crawler
+    image: kurdish-crawler
     # Picks up TEXT_MIN_WORD_COUNT, SCRAPEOPS_API_KEY, HF_TOKEN, etc.
     # HF_TOKEN enables a faster authenticated GlotLID model download.
     env_file:

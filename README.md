@@ -1,4 +1,4 @@
-# Sorjin Scrapy
+# Kurdish Scrapy
 
 A [Scrapy](https://www.scrapy.org/) package based web scraper for collecting text data in low-resource languages from websites. The tool recursively crawls specified domains, extracts article content using [Trafilatura](https://trafilatura.readthedocs.io/), and filters results by language using Facebook's [FastText language identification model](https://huggingface.co/facebook/fasttext-language-identification).
 
@@ -26,8 +26,8 @@ A [Scrapy](https://www.scrapy.org/) package based web scraper for collecting tex
 
 1. Clone the repository:
 ```bash
-git clone git@github.com:cikay/sorjin_scrapy.git
-cd sorjin_scrapy
+git clone git@github.com:cikay/kurdish_scrapy.git
+cd kurdish_scrapy
 ```
 
 2. Create and activate virtual environment:
@@ -59,7 +59,7 @@ TEXT_MIN_WORD_COUNT=100
 
 Note: `SCRAPEOPS_API_KEY` is currently optional and scraping may still work without it. If this changes in the future and requests start failing, either:
 - obtain a valid ScrapeOps API key, or
-- remove `sorjin_scrapy.middlewares.ScrapeOpsFakeUserAgentMiddleware` from `DOWNLOADER_MIDDLEWARES` in `sorjin_scrapy/settings.py`.
+- remove `kurdish_scrapy.middlewares.ScrapeOpsFakeUserAgentMiddleware` from `DOWNLOADER_MIDDLEWARES` in `kurdish_scrapy/settings.py`.
 
 ## Usage
 
@@ -152,7 +152,7 @@ The spider outputs the following fields:
 ## Project Structure
 
 ```
-├── sorjin_scrapy/
+├── kurdish_scrapy/
 │   ├── spiders/
 │   │   ├── sitemap.py        # Sitemap-based spider
 │   │   ├── recursive.py      # Recursive fallback spider

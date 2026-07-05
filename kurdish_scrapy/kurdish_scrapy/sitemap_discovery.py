@@ -7,7 +7,7 @@ import requests
 from requests import Response
 from requests.exceptions import RequestException
 
-from sorjin_scrapy.settings import SITEMAP_PATTERNS
+from kurdish_scrapy.settings import SITEMAP_PATTERNS
 
 
 SITEMAP_REGEX = re.compile(r"Sitemap:\s([^\r\n#]*)", re.MULTILINE)
@@ -66,7 +66,7 @@ def _probe_sitemap_url(url: str) -> str | None:
     """
     headers = {
         "Accept": "application/xml,text/xml;q=0.9,*/*;q=0.8",
-        "User-Agent": "Mozilla/5.0 (compatible; SorjinScrapy/1.0)",
+        "User-Agent": "Mozilla/5.0 (compatible; KurdishScrapy/1.0)",
     }
     try:
         response = requests.get(

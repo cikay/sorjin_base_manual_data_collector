@@ -9,7 +9,7 @@
 from scrapy.exceptions import DropItem
 
 
-from sorjin_scrapy.settings import ALLOWED_LANGS, TEXT_MIN_WORD_COUNT
+from kurdish_scrapy.settings import ALLOWED_LANGS, TEXT_MIN_WORD_COUNT
 
 
 class LenPipeline:

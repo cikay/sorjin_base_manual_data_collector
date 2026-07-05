@@ -1,8 +1,8 @@
 import scrapy
 
 from extractor.url_extractor import UrlExtractor
-from sorjin_scrapy.settings import ALLOWED_LANGS
-from sorjin_scrapy.spiders.base import BaseSpider
+from kurdish_scrapy.settings import ALLOWED_LANGS
+from kurdish_scrapy.spiders.base import BaseSpider
 
 
 class RecursiveSpider(BaseSpider):
